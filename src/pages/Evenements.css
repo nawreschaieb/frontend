@@ -1,0 +1,247 @@
+/* Style général pour la page d'événements */
+.evenements-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Style de l'en-tête */
+.evenements-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.evenements-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.evenements-header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Style des actions en haut */
+.top-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.btn-add-event {
+  display: inline-flex;
+  align-items: center;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-add-event i {
+  margin-right: 0.5rem;
+}
+
+.btn-add-event:hover {
+  background-color: #2980b9;
+}
+
+/* Style des filtres */
+.filtres {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.recherche {
+  flex: 1;
+  min-width: 250px;
+}
+
+.recherche input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.recherche input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+.filtre-categorie {
+  width: 200px;
+}
+
+.filtre-categorie select {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  appearance: none;
+  background-color: white;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 1em;
+  cursor: pointer;
+}
+
+.filtre-categorie select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+/* Style du chargement */
+.chargement {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.2rem;
+}
+
+/* Style de la liste d'événements */
+.liste-evenements {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+/* Style de la carte d'événement */
+.carte-evenement {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+}
+
+.carte-evenement:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.image-evenement {
+  height: 200px;
+  overflow: hidden;
+}
+
+.image-evenement img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.carte-evenement:hover .image-evenement img {
+  transform: scale(1.05);
+}
+
+.details-evenement {
+  padding: 1.5rem;
+}
+
+.details-evenement h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.info-evenement {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.info-evenement p {
+  margin-right: 1.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.info-evenement i {
+  margin-right: 0.5rem;
+  color: #3498db;
+}
+
+.badge {
+  background-color: #e7f5ff;
+  color: #3498db;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.description {
+  margin-bottom: 1.5rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.btn-details {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-details:hover {
+  background-color: #2980b9;
+}
+
+/* Message quand aucun résultat n'est trouvé */
+.aucun-resultat {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  color: #666;
+}
+
+/* Style responsive */
+@media screen and (max-width: 768px) {
+  .evenements-container {
+    padding: 1.5rem;
+  }
+  
+  .evenements-header h1 {
+    font-size: 2rem;
+  }
+  
+  .filtres {
+    flex-direction: column;
+  }
+  
+  .recherche, .filtre-categorie {
+    width: 100%;
+  }
+  
+  .liste-evenements {
+    grid-template-columns: 1fr;
+  }
+} 
