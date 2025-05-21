@@ -9,14 +9,23 @@ const AuthContext = createContext(null);
 // Composant Provider qui encapsule l'application
 export function AuthProvider({ children }) {
   // État pour stocker l'utilisateur actuellement connecté
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState({
+    // Utilisateur simulé à des fins de test
+    id: '123',
+    name: 'Organisateur Test',
+    role: 'organisateur', // Rôle "organisateur" pour tester la OrganizerNavbar
+    roles: ['organisateur'],
+    token: 'fake-token-for-testing'
+  });
 
   // État pour indiquer si la vérification de l'authentification est en cours
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Vérifie l'authentification dès le chargement de l'application
   useEffect(() => {
-    checkAuth();
+    // En mode test, nous n'appelons pas checkAuth() car nous avons déjà un utilisateur simulé
+    // Dans un environnement de production, vous devriez décommenter cette ligne
+    // checkAuth();
   }, []);
 
   // Fonction qui vérifie si un token valide est présent
@@ -46,13 +55,17 @@ export function AuthProvider({ children }) {
         }
       } else {
         // Aucun token => aucun utilisateur connecté
-        setCurrentUser(null);
+        // Pour le test, nous gardons l'utilisateur simulé
+        // Dans un environnement de production, vous devriez décommenter cette ligne
+        // setCurrentUser(null);
       }
     } catch (error) {
       // Erreur lors du décodage ou traitement du token
       console.error("Erreur lors de la vérification de l'authentification:", error);
       localStorage.removeItem('token');
-      setCurrentUser(null);
+      // Pour le test, nous gardons l'utilisateur simulé
+      // Dans un environnement de production, vous devriez décommenter cette ligne
+      // setCurrentUser(null);
     } finally {
       setIsLoading(false); // Fin du chargement
     }
@@ -67,7 +80,9 @@ export function AuthProvider({ children }) {
   // Fonction de déconnexion
   const logout = () => {
     localStorage.removeItem('token');
-    setCurrentUser(null);
+    // Pour le test, nous gardons l'utilisateur simulé
+    // Dans un environnement de production, vous devriez décommenter cette ligne
+    // setCurrentUser(null);
   };
 
   // Fonction utilitaire pour vérifier un rôle

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './ManageEvents.css';
 // Import des images
-import concertImage from '../assets/enactus.jpg';
-import artImage from '../assets/Festival.jpg';
-import gastronomieImage from '../assets/festival-.jpg';
-import techImage from '../assets/conference.jpg';
-import sportImage from '../assets/sport.jpg';
+import concertImage from "../../assets/enactus.jpg";
+import artImage from "../../assets/Festival.jpg";
+import gastronomieImage from "../../assets/festival-.jpg";
+import techImage from "../../assets/conference.jpg";
+import sportImage from "../../assets/sport.jpg";
 
 const ManageEvents = () => {
   const navigate = useNavigate();
