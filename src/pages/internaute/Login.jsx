@@ -55,7 +55,7 @@ const Login = () => {
       
       try {
         // Updated endpoint to match your backend structure
-        const response = await fetch("http://localhost:5000/api/auth/login", {
+        const response = await fetch("http://localhost:5000/auth/login", {
           method: "POST",
           headers: { 
             "Content-Type": "application/json" 
@@ -69,15 +69,11 @@ const Login = () => {
         } else {
           // Store the token in localStorage
           localStorage.setItem("token", data.token);
-          
-          // Check user type and redirect accordingly
-          if (data.user && (data.user.usertype === "admin" || data.user.usertype === "owner")) {
-            navigate("/admin/dashboard");
-          } else {
-            navigate(returnUrl);
+          navigate("/Evenements");
+         
           }
         }
-      } catch (error) {
+      catch (error) {
         setErrors({
           form: "Échec de la connexion. Veuillez vérifier vos identifiants."
         });

@@ -67,11 +67,6 @@ const Navbar = () => {
         {/* Menu de navigation */}
         <ul className={`nav-menu ${menuOuvert ? 'active' : ''}`}>
           <li className="nav-item">
-            <Link to="/Accueil" className={`nav-link ${estActif('/Accueil') ? 'active' : ''}`}>
-              Accueil
-            </Link>
-          </li>
-          <li className="nav-item">
             <Link to="/Evenements" className={`nav-link ${estActif('/Evenements') ? 'active' : ''}`}>
               Événements
             </Link>

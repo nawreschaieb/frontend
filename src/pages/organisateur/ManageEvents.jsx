@@ -17,71 +17,27 @@ const ManageEvents = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
 
-  // Charger les événements (simulation)
   useEffect(() => {
-    setTimeout(() => {
-      const demoEvents = [
-        {
-          id: 1,
-          titre: "Concert de Jazz",
-          date: "2023-12-15",
-          heure: "20:00",
-          lieu: "Salle Apollo",
-          categorie: "Musique",
-          prix: 25,
-          description: "Un concert de jazz avec les meilleurs artistes de la scène locale.",
-          image: concertImage
-        },
-        {
-          id: 2,
-          titre: "Exposition d'Art Moderne",
-          date: "2023-12-10",
-          heure: "10:00",
-          lieu: "Galerie Lumière",
-          categorie: "Art",
-          prix: 15,
-          description: "Découvrez les œuvres des artistes contemporains les plus prometteurs.",
-          image: artImage
-        },
-        {
-          id: 3,
-          titre: "Festival de Gastronomie",
-          date: "2023-12-18",
-          heure: "12:00",
-          lieu: "Parc Central",
-          categorie: "Gastronomie",
-          prix: 30,
-          description: "Dégustez des plats délicieux préparés par des chefs renommés.",
-          image: gastronomieImage
-        },
-        {
-          id: 4,
-          titre: "Conférence Tech",
-          date: "2023-12-20",
-          heure: "14:00",
-          lieu: "Centre de Conférences",
-          categorie: "Technologie",
-          prix: 0,
-          description: "Les dernières innovations technologiques présentées par des experts.",
-          image: techImage
-        },
-        {
-          id: 5,
-          titre: "Tournoi Sportif",
-          date: "2023-12-22",
-          heure: "19:30",
-          lieu: "Stade Municipal",
-          categorie: "Sport",
-          prix: 12,
-          description: "Une compétition sportive avec les meilleures équipes de la région.",
-          image: sportImage
-        }
-      ];
-      
-      setEvents(demoEvents);
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/event/getallevents");
+
+      if (!response.ok) {
+        throw new Error("Erreur lors du chargement des événements");
+      }
+
+      const data = await response.json();
+      setEvents(data.events || []); // s'assurer que le backend renvoie bien { events: [...] }
       setLoading(false);
-    }, 1000);
-  }, []);
+    } catch (error) {
+      console.error("Erreur :", error);
+      setLoading(false);
+    }
+  };
+
+  fetchEvents();
+}, []);
+
 
   // Filtrer les événements
   const filteredEvents = events.filter(event => {
@@ -105,20 +61,73 @@ const ManageEvents = () => {
   };
 
   // Supprimer un événement
-  const deleteEvent = () => {
-    if (eventToDelete) {
-      setEvents(events.filter(event => event.id !== eventToDelete.id));
-      setShowDeleteModal(false);
-      setEventToDelete(null);
+ const deleteEvent = async () => {
+  if (eventToDelete) {
+    try {
+      const response = await fetch(`http://localhost:5000/event/deletevents/${eventToDelete._id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          // 'Authorization': `Bearer ${token}` // si tu utilises un token
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Supprimer localement dans l'état
+        setEvents(events.filter(event => event._id !== eventToDelete._id));
+        setShowDeleteModal(false);
+        setEventToDelete(null);
+      } else {
+        alert(data.message || "Erreur lors de la suppression.");
+      }
+    } catch (error) {
+      console.error("Erreur réseau:", error);
+      alert("Erreur de connexion au serveur.");
     }
+  }
+};
+
+
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  const updatedEvent = {
+    titre,
+    date,
+    heure,
+    lieu,
+    prix,
+    categorie,
+    description,
+    image,
   };
 
-  // Éditer un événement
-  const editEvent = (eventId) => {
-    // Dans une application réelle, vous redirigeriez vers un formulaire d'édition
-    // avec l'ID de l'événement, par exemple:
-    navigate(`/EditEvent/${eventId}`);
-  };
+  try {
+    const response = await fetch(`http://localhost:5000/event/updatevents/${eventId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${token}` si besoin
+      },
+      body: JSON.stringify(updatedEvent),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Événement modifié avec succès !");
+      navigate("/ManageEvents");
+    } else {
+      alert(`Erreur: ${data.message}`);
+    }
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour :", error);
+    alert("Une erreur est survenue.");
+  }
+};
+
 
   // Formater la date
   const formatDate = (dateString) => {
@@ -183,7 +192,7 @@ const ManageEvents = () => {
               </thead>
               <tbody>
                 {filteredEvents.map(event => (
-                  <tr key={event.id}>
+                  <tr key={event._id}>
                     <td className="event-image">
                       <img src={event.image} alt={event.titre} />
                     </td>

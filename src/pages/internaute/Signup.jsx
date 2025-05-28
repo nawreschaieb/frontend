@@ -59,8 +59,8 @@ const Signup = () => {
     
     if (!formData.phone) {
       newErrors.phone = "Le numéro de téléphone est requis";
-    } else if (!/^\d{10,}$/.test(formData.phone.replace(/\s+/g, ''))) {
-      newErrors.phone = "Format de téléphone invalide";
+    } else if (!/^(\+216)?[2-9]\d{7}$/.test(formData.phone.replace(/\s+/g, ''))) {
+      newErrors.phone = "Format de téléphone tunisien invalide (ex: 22123456 ou +21622123456)";
     }
     
     if (!formData.answer) {
@@ -80,7 +80,7 @@ const Signup = () => {
         // Remove confirmPassword as it's not part of the backend schema
         const { confirmPassword, ...dataToSend } = formData;
         
-        const response = await fetch("http://localhost:5000/api/auth/register", {
+        const response = await fetch("http://localhost:5000/auth/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -91,12 +91,13 @@ const Signup = () => {
         const data = await response.json();
         
         if (!response.ok) {
-          setErrors({ form: data.message || "Échec de l'inscription. Veuillez réessayer." });
+          setErrors({ form: data.message || (data.error && data.error.message) || "Échec de l'inscription. Veuillez réessayer." });
         } else {
           // Registration success - redirect to login
           navigate("/login", { state: { message: "Inscription réussie! Vous pouvez maintenant vous connecter." } });
         }
       } catch (error) {
+        console.error("Erreur d'inscription:", error);
         setErrors({
           form: "Échec de l'inscription. Veuillez réessayer plus tard."
         });
@@ -268,6 +269,20 @@ const Signup = () => {
                   </p>
                 )}
               </div>
+            </div>
+
+            <div>
+              <label htmlFor="usertype" className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+              <select
+                id="usertype"
+                name="usertype"
+                value={formData.usertype}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+              >
+                <option value="client">Participant</option>
+                <option value="organisateur">Organisateur</option>
+              </select>
             </div>
 
             <div>

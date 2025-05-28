@@ -143,8 +143,15 @@ const AddEvent = () => {
     
     try {
       setLoading(true);
-      
+      const response = await fetch("http://localhost:5000/event/createvents", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json" 
+          },
+          body: JSON.stringify(formData),
+      } );
       // Simuler l'envoi à un serveur
+
       // Dans une application réelle, vous utiliseriez fetch ou axios pour envoyer les données à votre API
       console.log('Données à envoyer:', formData);
       

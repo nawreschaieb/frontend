@@ -3,7 +3,6 @@ import { AuthProvider, useAuth } from './context/AuthContext'; // Import de Auth
 import Login from "./pages/internaute/Login";
 import Signup from "./pages/internaute/Signup";
 import Evenements from "./pages/Evenements"; // Import de la page Evenements
-import Accueil from "./pages/Accueil"; // Import de la page Accueil
 import AddEvent from "./pages/organisateur/AddEvent"; // Import de la page AddEvent
 import ManageEvents from "./pages/organisateur/ManageEvents"; // Import de la page ManageEvents
 import Profile from "./pages/Profile"; // Import de la page Profile
@@ -21,9 +20,9 @@ const AppContent = () => {
     if (isAuthenticated()) {
       // Si l'utilisateur est connecté, on vérifie son rôle
       if (currentUser) {
-        if (currentUser.role === 'user') {
+        if (currentUser.role === 'participant') {
           return <UserNavbar />;
-        } else if (currentUser.role === 'organisateur' || currentUser.role === 'vendeur') {
+        } else if (currentUser.role === 'organisateur') {
           return <OrganizerNavbar />;
         }
       }
@@ -37,9 +36,7 @@ const AppContent = () => {
       {renderNavbar()}
       <Routes>
         {/* Route par défaut qui redirige vers l'accueil */}
-        <Route path="/" element={<Navigate to="/Accueil" />} />
-        {/* Route d'accueil sans espace après "Accueil" */}
-        <Route path="/Accueil" element={<Accueil />} />
+        <Route path="/" element={<Navigate to="/Login" />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Evenements" element={<Evenements />} /> {/* Route pour la page d'événements */}
