@@ -9,7 +9,7 @@ export const handleImageUpload = async (file, folder = 'default') => {
 
     const token = localStorage.getItem('token');
 
-    const response = await fetch('http://localhost:5000/api/upload/image', {
+    const response = await fetch('http://localhost:5000/upload/image', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

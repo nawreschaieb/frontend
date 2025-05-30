@@ -104,13 +104,6 @@ const Evenements = () => {
         <h1>Événements à venir</h1>
         <p>Découvrez tous les événements passionnants organisés près de chez vous</p>
       </div>
-
-      <div className="top-actions">
-        <Link to="/AddEvent" className="btn-add-event">
-          <i className="fas fa-plus"></i> Ajouter un événement
-        </Link>
-      </div>
-
       <div className="filtres">
         <div className="recherche">
           <input
