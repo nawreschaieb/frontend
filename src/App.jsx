@@ -10,7 +10,7 @@ import EventDetails from "./pages/EventDetails"; // Import de la page EventDetai
 import Navbar from './components/Navbar'; // Import de la navbar standard
 import UserNavbar from './components/UserNavbar'; // Import de la navbar utilisateur
 import OrganizerNavbar from './components/OrganizerNavbar'; // Import de la navbar organisateur
-
+import MesReservations from './pages/participant/MesReservations'; // Import de la page MesReservations
 // Composant qui gère l'affichage conditionnel de la navbar
 const AppContent = () => {
   const { isAuthenticated, currentUser } = useAuth();
@@ -44,6 +44,7 @@ const AppContent = () => {
         <Route path="/ManageEvents" element={<ManageEvents />} /> {/* Route pour la gestion des événements */}
         <Route path="/Profile" element={<Profile />} /> {/* Route pour la page de profil */}
         <Route path="/EventDetails/:id" element={<EventDetails />} /> {/* Route pour la page de détails d'événement */}
+        <Route path="/MesReservations" element={<MesReservations />} /> {/* Route pour la page de mes réservations */}
       </Routes>
     </Router>
   );

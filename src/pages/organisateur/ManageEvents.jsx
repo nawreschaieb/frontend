@@ -7,6 +7,7 @@ import artImage from "../../assets/Festival.jpg";
 import gastronomieImage from "../../assets/festival-.jpg";
 import techImage from "../../assets/conference.jpg";
 import sportImage from "../../assets/sport.jpg";
+import { handleImageUpload } from '../../utils/uploadUtils'; // adapte le chemin si besoin
 
 const ManageEvents = () => {
   const navigate = useNavigate();
@@ -135,6 +136,26 @@ const ManageEvents = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImagePreview(URL.createObjectURL(file));
+      try {
+        const { imageUrl, public_id } = await handleImageUpload(file, 'events');
+        setFormData({
+          ...formData,
+          image: [{ url: imageUrl, public_id }]
+        });
+      } catch (error) {
+        // Gérer l'erreur d'upload
+      }
+    }
+  };
+
+  const editEvent = (id) => {
+    navigate(`/EditEvent/${id}`);
+  };
+
   return (
     <div className="manage-events-container">
       <div className="manage-events-header">
@@ -204,7 +225,7 @@ const ManageEvents = () => {
                     <td className="actions">
                       <button 
                         className="btn-edit"
-                        onClick={() => editEvent(event.id)}
+                        onClick={() => editEvent(event._id)}
                         title="Modifier"
                       >
                         <i className="fas fa-edit"></i>

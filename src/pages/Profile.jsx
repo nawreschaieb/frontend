@@ -13,53 +13,21 @@ const Profile = () => {
 
   // État pour les données du profil
   const [profileData, setProfileData] = useState({
-    nom: '',
-    prenom: '',
+    nom : '',
     email: '',
     telephone: '',
-    adresse: '',
-    ville: '',
-    codePostal: '',
-    bio: '',
-    avatar: null,
-    preferences: {
-      musique: false,
-      art: false,
-      sport: false,
-      gastronomie: false,
-      technologie: false,
-      education: false,
-      spectacle: false
-    }
+    avatar: null
   });
 
   // Charger les données du profil (simulation)
   useEffect(() => {
     setTimeout(() => {
-      // Simuler un chargement de données depuis une API
       const userData = {
         nom: 'chaieb',
-        prenom: 'nawres',
         email: 'chaieb.nawres2@gmail.com',
         telephone: '58771710',
-        adresse: 'Rue Med Fadhel Ben Achour ',
-        ville: 'Jammel',
-        codePostal: '5020',
-        bio: ' Passionné par la musique, l\'art, le sport, la technologie et l\'éducation.',
-       
-
-        avatar: nawres,
-        preferences: {
-          musique: true,
-          art: true,
-          sport: true,
-          gastronomie: false,
-          technologie: true,
-          education: true,
-          spectacle: false
-        }
+        avatar: nawres
       };
-
       setProfileData(userData);
       setLoading(false);
     }, 1000);
@@ -153,7 +121,7 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-header">
         <h1>Mon Profil</h1>
-        <p>Gérez vos informations personnelles et préférences</p>
+        <p>Gérez vos informations personnelles</p>
       </div>
 
       {message.text && (
@@ -203,17 +171,7 @@ const Profile = () => {
             <div className="form-section">
               <h3>Informations personnelles</h3>
               <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="prenom">Prénom</label>
-                  <input 
-                    type="text" 
-                    id="prenom" 
-                    name="prenom"
-                    value={profileData.prenom}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                </div>
+                
                 <div className="form-group">
                   <label htmlFor="nom">Nom</label>
                   <input 
@@ -226,7 +184,6 @@ const Profile = () => {
                   />
                 </div>
               </div>
-
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="email">Email</label>
@@ -252,145 +209,6 @@ const Profile = () => {
                 </div>
               </div>
             </div>
-
-            <div className="form-section">
-              <h3>Adresse</h3>
-              <div className="form-group">
-                <label htmlFor="adresse">Adresse</label>
-                <input 
-                  type="text" 
-                  id="adresse" 
-                  name="adresse"
-                  value={profileData.adresse}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="ville">Ville</label>
-                  <input 
-                    type="text" 
-                    id="ville" 
-                    name="ville"
-                    value={profileData.ville}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="codePostal">Code postal</label>
-                  <input 
-                    type="text" 
-                    id="codePostal" 
-                    name="codePostal"
-                    value={profileData.codePostal}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <h3>À propos de moi</h3>
-              <div className="form-group">
-                <label htmlFor="bio">Bio</label>
-                <textarea 
-                  id="bio" 
-                  name="bio"
-                  value={profileData.bio}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  rows="4"
-                ></textarea>
-              </div>
-            </div>
-
-            <div className="form-section">
-              <h3>Préférences d'événements</h3>
-              <div className="preferences-grid">
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-musique" 
-                    name="pref-musique"
-                    checked={profileData.preferences.musique}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-musique">Musique</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-art" 
-                    name="pref-art"
-                    checked={profileData.preferences.art}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-art">Art</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-sport" 
-                    name="pref-sport"
-                    checked={profileData.preferences.sport}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-sport">Sport</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-gastronomie" 
-                    name="pref-gastronomie"
-                    checked={profileData.preferences.gastronomie}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-gastronomie">Gastronomie</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-technologie" 
-                    name="pref-technologie"
-                    checked={profileData.preferences.technologie}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-technologie">Technologie</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-education" 
-                    name="pref-education"
-                    checked={profileData.preferences.education}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-education">Éducation</label>
-                </div>
-                <div className="preference-item">
-                  <input 
-                    type="checkbox" 
-                    id="pref-spectacle" 
-                    name="pref-spectacle"
-                    checked={profileData.preferences.spectacle}
-                    onChange={handleChange}
-                    disabled={!isEditing}
-                  />
-                  <label htmlFor="pref-spectacle">Spectacle</label>
-                </div>
-              </div>
-            </div>
-
             {isEditing && (
               <div className="form-actions">
                 <button 
