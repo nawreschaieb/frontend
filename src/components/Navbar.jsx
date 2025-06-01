@@ -1,52 +1,37 @@
-// src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import nawres from '../assets/nawres.jpg';
+import { useAuth } from '../context/AuthContext';
+
+
 
 const Navbar = () => {
   const [menuOuvert, setMenuOuvert] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
-  
-  // Simuler un état d'authentification (à remplacer par votre logique d'authentification réelle)
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Mettre à true pour tester l'interface utilisateur connecté
 
-  // Vérifier si le lien est actif
-  const estActif = (chemin) => {
-    return location.pathname === chemin;
-  };
+  const { logout, isOrganisateur, isAuthenticated, currentUser } = useAuth();
 
-  // Gérer le scroll pour changer l'apparence de la navbar
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll);
-    
-    // Nettoyage de l'écouteur d'événement
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fermer le menu mobile lors du changement de route
   useEffect(() => {
     setMenuOuvert(false);
     setDropdownOpen(false);
   }, [location]);
 
-  // Simuler une déconnexion
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    // Ajouter ici la logique réelle de déconnexion
-  };
+const handleLogout = () => {
+  logout();          // supprime le token et remet currentUser à null
+   window.location.reload();
+  navigate("/Login"); // redirige vers la page de login
+};
 
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
@@ -63,52 +48,33 @@ const Navbar = () => {
             <span></span>
           </div>
         </div>
+        <div className="organisateur-menu flex gap-6 items-center">
 
-        {/* Menu de navigation */}
-        <ul className={`nav-menu ${menuOuvert ? 'active' : ''}`}>
-          <li className="nav-item">
-            <Link to="/Evenements" className={`nav-link ${estActif('/Evenements') ? 'active' : ''}`}>
-              Événements
-            </Link>
-          </li>
-          {isAuthenticated && (
-            <li className="nav-item">
-              <Link to="/ManageEvents" className={`nav-link ${estActif('/ManageEvents') ? 'active' : ''}`}>
-                Gérer les événements
-              </Link>
-            </li>
-          )}
-          
-          {/* Boutons d'authentification pour mobile */}
-          <div className="auth-buttons-mobile">
-            {!isAuthenticated ? (
-              <>
-                <Link to="/Login" className="btn-auth login">
-                  Connexion
-                </Link>
-                <Link to="/Signup" className="btn-auth signup">
-                  Inscription
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/Profile" className="mobile-menu-item">
-                  <i className="fas fa-user"></i> Mon profil
-                </Link>
-                <Link to="/ManageEvents" className="mobile-menu-item">
-                  <i className="fas fa-calendar-alt"></i> Mes événements
-                </Link>
-                <button className="mobile-menu-item logout" onClick={handleLogout}>
-                  <i className="fas fa-sign-out-alt"></i> Déconnexion
-                </button>
-              </>
-            )}
-          </div>
-        </ul>
+         {isAuthenticated() && !isOrganisateur() && (
+    <>
+       <Link to="/Evenements" className="text-black bg-white hover:bg-blue-400 hover:text-white px-3 py-1 rounded text-sm">
+    Événements
+  </Link>
+    </>
+  )}   
 
-        {/* Boutons d'authentification ou menu utilisateur pour desktop */}
-        <div className="auth-buttons">
-          {!isAuthenticated ? (
+
+  {isAuthenticated() && isOrganisateur() && (
+    <>
+      <Link to="/ManageEvents" className="text-black bg-white hover:bg-blue-400 hover:text-white px-3 py-1 rounded text-sm">
+        Gérer événement
+      </Link>
+      <Link to="/AddEvent" className="text-black bg-white hover:bg-blue-400 hover:text-white px-3 py-1 rounded text-sm">
+        Ajouter événement
+      </Link>
+    </>
+  )}
+</div>
+
+
+        {/* Boutons d'authentification pour mobile */}
+        <div className="auth-buttons-mobile">
+          {!isAuthenticated() ? (
             <>
               <Link to="/Login" className="btn-auth login">
                 Connexion
@@ -118,30 +84,64 @@ const Navbar = () => {
               </Link>
             </>
           ) : (
-            /* Menu utilisateur */
-            <div className="user-menu">
-              <div 
-                className="user-avatar" 
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <img src={nawres} alt="Avatar" />
-              </div>
-              
-              <div className={`dropdown-menu ${dropdownOpen ? 'active' : ''}`}>
-                <Link to="/Profile" className="dropdown-item">
-                  <i className="fas fa-user"></i> Mon profil
-                </Link>
-                <Link to="/ManageEvents" className="dropdown-item">
-                  <i className="fas fa-calendar-alt"></i> Mes événements
-                </Link>
-                <div className="dropdown-divider"></div>
-                <button className="dropdown-item logout" onClick={handleLogout}>
-                  <i className="fas fa-sign-out-alt"></i> Déconnexion
-                </button>
-              </div>
-            </div>
+            <>
+              <Link to="/Profile" className="mobile-menu-item">
+                <i className="fas fa-user"></i> Mon profil
+              </Link>
+              <Link to="/ManageEvents" className="mobile-menu-item">
+                <i className="fas fa-calendar-alt"></i> Mes événements
+              </Link>
+              <Link to="/ManageEvents" className="mobile-menu-item">
+                <i className="fas fa-calendar-alt"></i> Mes reservations
+              </Link>
+              <button className="mobile-menu-item logout" onClick={handleLogout}>
+                <Link to="/Login" className="mobile-menu-item logout"></Link>
+                <i className="fas fa-sign-out-alt"></i> Déconnexion
+              </button>
+            </>
           )}
         </div>
+
+       {/* Menu utilisateur (desktop) */}
+<div className="auth-buttons">
+  {!isAuthenticated() ? (
+    <>
+      <Link to="/Login" className="btn-auth login">
+        Connexion
+      </Link>
+      <Link to="/Signup" className="btn-auth signup">
+        Inscription
+      </Link>
+    </>
+  ) : (
+    
+    <div className="user-menu">
+      <div className="user-avatar" onClick={() => setDropdownOpen(!dropdownOpen)}>
+        <img src={nawres} alt="Avatar" />
+      </div>
+
+      <div className={`dropdown-menu ${dropdownOpen ? 'active' : ''}`}>
+        <Link to="/Profile" className="dropdown-item">
+          <i className="fas fa-user"></i> Mon profil
+        </Link>
+
+        {/* Afficher "Mes réservations" seulement si ce n'est PAS un organisateur */}
+        {!isOrganisateur() && (
+          <Link to="/MesReservations" className="dropdown-item">
+            <i className="fas fa-calendar-check"></i> Mes réservations
+          </Link>
+        )}
+
+        <div className="dropdown-divider"></div>
+
+        <button className="dropdown-item logout" onClick={handleLogout}>
+          <i className="fas fa-sign-out-alt"></i> Déconnexion
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
       </div>
     </nav>
   );

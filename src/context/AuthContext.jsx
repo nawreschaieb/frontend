@@ -9,24 +9,25 @@ const AuthContext = createContext(null);
 // Composant Provider qui encapsule l'application
 export function AuthProvider({ children }) {
   // État pour stocker l'utilisateur actuellement connecté
-  const [currentUser, setCurrentUser] = useState({
-    // Utilisateur simulé à des fins de test
-    id: '123',
-    name: 'Organisateur Test',
-    role: 'organisateur', // Rôle "organisateur" pour tester la OrganizerNavbar
-    roles: ['organisateur'],
-    token: 'fake-token-for-testing'
-  });
+const [currentUser, setCurrentUser] = useState(null); // ← Ne plus avoir un utilisateur simulé
+
 
   // État pour indiquer si la vérification de l'authentification est en cours
   const [isLoading, setIsLoading] = useState(false);
 
   // Vérifie l'authentification dès le chargement de l'application
-  useEffect(() => {
-    // En mode test, nous n'appelons pas checkAuth() car nous avons déjà un utilisateur simulé
-    // Dans un environnement de production, vous devriez décommenter cette ligne
-    // checkAuth();
-  }, []);
+useEffect(() => {
+  checkAuth();
+}, []);
+
+useEffect(() => {
+  if (currentUser) {
+    console.log("✅ currentUser changé:", currentUser);
+    console.log("✅ isAuthenticated():", isAuthenticated());
+    console.log("✅ isOrganisateur():", isOrganisateur());
+    console.log("✅ isParticipant():", isParticipant());
+  }
+}, [currentUser]);
 
   // Fonction qui vérifie si un token valide est présent
   const checkAuth = () => {
@@ -41,13 +42,18 @@ export function AuthProvider({ children }) {
         // Vérifie si le token n'est pas expiré
         if (decoded.exp * 1000 > Date.now()) {
           // Stocke les informations utilisateur dans l'état
-          setCurrentUser({
-            id: decoded.id,
-            name: decoded.name,
-            role: decoded.role,
-            roles: decoded.roles || [], // Assure que 'roles' est un tableau
-            token,
-          });
+        setCurrentUser({
+  id: decoded.id,
+  name: decoded.name,
+  role: decoded.role,       // rôle unique (string)
+  roles: decoded.roles || [], // tableau de rôles
+  token,
+});
+console.log("Token décodé:", decoded);
+
+
+
+
         } else {
           // Si le token a expiré, on le supprime
           localStorage.removeItem('token');
@@ -74,28 +80,37 @@ export function AuthProvider({ children }) {
   // Fonction de connexion (facultatif mais pratique)
   const login = (token) => {
     localStorage.setItem('token', token);
-    checkAuth(); // Recharge l'état utilisateur
+    checkAuth(); 
+    window.reload();
+    // Recharge l'état utilisateur
   };
 
   // Fonction de déconnexion
-  const logout = () => {
-    localStorage.removeItem('token');
-    // Pour le test, nous gardons l'utilisateur simulé
-    // Dans un environnement de production, vous devriez décommenter cette ligne
-    // setCurrentUser(null);
-  };
+const logout = () => {
+  console.log("Déconnexion : suppression du token localStorage");
+  localStorage.removeItem('token');
+  setCurrentUser(null);
+  console.log("Token après suppression :", localStorage.getItem('token')); 
+
+};
+
 
   // Fonction utilitaire pour vérifier un rôle
-  const hasRole = (role) => {
-    if (!currentUser) return false;
-    return currentUser.role === role || currentUser.roles.includes(role);
-  };
+const hasRole = (role) => {
+  if (!currentUser) return false;
+
+  const userRole = currentUser.role;
+  const userRoles = currentUser.roles || [];
+
+  // Vérifie si role est dans roles ou égal à role unique
+  return (typeof userRole === 'string' && userRole === role) || userRoles.includes(role);
+};
 
   // Fonction pour savoir si l'utilisateur est un vendeur
-  const isVendeur = () => hasRole('vendeur');
+  const isOrganisateur = () => hasRole('organisateur');
 
   // Fonction pour savoir si l'utilisateur est un admin
-  const isAdmin = () => hasRole('admin');
+  const isParticipant = () => hasRole('participant');
 
   // Vérifie simplement si un utilisateur est connecté
   const isAuthenticated = () => !!currentUser;
@@ -108,8 +123,8 @@ export function AuthProvider({ children }) {
     logout,
     checkAuth,
     isAuthenticated,
-    isVendeur,
-    isAdmin,
+    isOrganisateur ,
+    isParticipant,
   };
 
   // Fournit le contexte à tous les enfants du composant

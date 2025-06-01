@@ -15,28 +15,15 @@ import MesReservations from './pages/participant/MesReservations'; // Import de 
 const AppContent = () => {
   const { isAuthenticated, currentUser } = useAuth();
   
-  // Détermine quelle navbar afficher
-  const renderNavbar = () => {
-    if (isAuthenticated()) {
-      // Si l'utilisateur est connecté, on vérifie son rôle
-      if (currentUser) {
-        if (currentUser.role === 'participant') {
-          return <UserNavbar />;
-        } else if (currentUser.role === 'organisateur') {
-          return <OrganizerNavbar />;
-        }
-      }
-    }
-    // Par défaut, on affiche la navbar standard
-    return <Navbar />;
-  };
+  
 
   return (
     <Router>
-      {renderNavbar()}
+  <Navbar />
       <Routes>
         {/* Route par défaut qui redirige vers l'accueil */}
         <Route path="/" element={<Navigate to="/Login" />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Evenements" element={<Evenements />} /> {/* Route pour la page d'événements */}
@@ -44,6 +31,7 @@ const AppContent = () => {
         <Route path="/ManageEvents" element={<ManageEvents />} /> {/* Route pour la gestion des événements */}
         <Route path="/Profile" element={<Profile />} /> {/* Route pour la page de profil */}
         <Route path="/EventDetails/:id" element={<EventDetails />} /> {/* Route pour la page de détails d'événement */}
+        <Route path="/event/details/:id" element={<EventDetails />} />
         <Route path="/MesReservations" element={<MesReservations />} /> {/* Route pour la page de mes réservations */}
       </Routes>
     </Router>

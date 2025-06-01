@@ -64,8 +64,12 @@ const Login = () => {
         });
         
         const data = await response.json();
+   
+    navigate('/Evenements');
+         window.location.reload();
         if (!response.ok) {
           setErrors({ form: data.message || "Échec de connexion. Vérifiez vos identifiants." });
+          
         } else {
           // Store the token in localStorage
           localStorage.setItem("token", data.token);

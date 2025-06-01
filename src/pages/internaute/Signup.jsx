@@ -7,15 +7,16 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
-    userName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    phone: "",
-    answer: "",
-    usertype: "client"
-  });
+const [formData, setFormData] = useState({
+  userName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  phone: "",
+  answer: "",
+  role: "participant", // <-- changé ici
+});
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -272,17 +273,18 @@ const Signup = () => {
             </div>
 
             <div>
-              <label htmlFor="usertype" className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-              <select
-                id="usertype"
-                name="usertype"
-                value={formData.usertype}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
-              >
-                <option value="client">Participant</option>
-                <option value="organisateur">Organisateur</option>
-              </select>
+            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+<select
+  id="role"
+  name="role" // <-- changé ici
+  value={formData.role} // <-- changé ici
+  onChange={handleChange}
+  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-200"
+>
+  <option value="client">Participant</option>
+  <option value="organisateur">Organisateur</option>
+</select>
+
             </div>
 
             <div>

@@ -15,108 +15,30 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simuler un chargement depuis une API
-    setLoading(true);
-    
-    setTimeout(() => {
-      // Données d'exemple - dans une application réelle, vous feriez un appel API
-      const demoEvents = [
-        {
-          id: "1",
-          titre: "Concert de Jazz",
-          date: "2023-12-15",
-          heure: "20:00",
-          lieu: "Salle Apollo",
-          region: "Tunis",
-          categorie: "Musique",
-          prix: 25,
-          description: "Un concert de jazz avec les meilleurs artistes de la scène locale. Venez profiter d'une soirée exceptionnelle dans une ambiance chaleureuse et conviviale. Des musiciens talentueux vous feront voyager à travers différents styles de jazz.",
-          image: concertImage,
-          organisateur: "Association Musicale de Tunis",
-          contact: "contact@musictunis.tn",
-          places_disponibles: 120
-        },
-        {
-          id: "2",
-          titre: "Exposition d'Art Moderne",
-          date: "2023-12-10",
-          heure: "10:00",
-          lieu: "Galerie Lumière",
-          region: "Sousse",
-          categorie: "Art",
-          prix: 15,
-          description: "Découvrez les œuvres des artistes contemporains les plus prometteurs. Cette exposition présente une collection diversifiée d'œuvres d'art qui explorent des thèmes actuels et des techniques innovantes.",
-          image: artImage,
-          organisateur: "Galerie Lumière",
-          contact: "info@galerielumiere.tn",
-          places_disponibles: 200
-        },
-        {
-          id: "3",
-          titre: "Festival de Gastronomie",
-          date: "2023-12-18",
-          heure: "12:00",
-          lieu: "Parc Central",
-          region: "Sfax",
-          categorie: "Gastronomie",
-          prix: 30,
-          description: "Dégustez des plats délicieux préparés par des chefs renommés. Ce festival met en valeur la richesse culinaire tunisienne et internationale avec des dégustations, des ateliers et des démonstrations de cuisine.",
-          image: gastronomieImage,
-          organisateur: "Association Culinaire de Sfax",
-          contact: "festival@gastronomie.tn",
-          places_disponibles: 500
-        },
-        {
-          id: "4",
-          titre: "Conférence Tech",
-          date: "2023-12-20",
-          heure: "14:00",
-          lieu: "Centre de Conférences",
-          region: "Tunis",
-          categorie: "Technologie",
-          prix: 0,
-          description: "Les dernières innovations technologiques présentées par des experts. Cette conférence rassemble des professionnels du secteur pour discuter des tendances actuelles et futures dans le domaine de la technologie.",
-          image: techImage,
-          organisateur: "TechTunisia",
-          contact: "info@techtunisia.tn",
-          places_disponibles: 300
-        },
-        {
-          id: "5",
-          titre: "Tournoi Sportif",
-          date: "2023-12-22",
-          heure: "19:30",
-          lieu: "Stade Municipal",
-          region: "Bizerte",
-          categorie: "Sport",
-          prix: 12,
-          description: "Une compétition sportive avec les meilleures équipes de la région. Ce tournoi annuel rassemble des équipes de toute la Tunisie pour des matchs passionnants et une ambiance festive.",
-          image: sportImage,
-          organisateur: "Fédération Sportive de Bizerte",
-          contact: "tournoi@sport.tn",
-          places_disponibles: 1000
-        }
-      ];
-      
-      const foundEvent = demoEvents.find(e => e.id === id);
-      
-      if (foundEvent) {
-        setEvent(foundEvent);
-      } else {
-        // Événement non trouvé
-        console.error("Événement non trouvé");
-      }
-      
-      setLoading(false);
-    }, 800);
-  }, [id]);
+useEffect(() => {
+    console.log("ID de l'événement :", id); // ← AJOUTE ÇA
 
-  // Formater la date
-  const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('fr-FR', options);
-  };
+  setLoading(true);
+
+  fetch(`http://localhost:5000/event/getevents/${id}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Erreur lors du chargement des événements");
+      }
+      return response.json();
+    })
+    .then(eventData => {
+      setEvent(eventData);
+    })
+    .catch(error => {
+      console.error("Erreur fetch :", error);
+      setEvent(null);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+}, [id]);
+
 
   // Gérer la réservation
   const handleReservation = () => {

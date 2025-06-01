@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
 import nawres from '../assets/nawres.jpg';
+import { useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // chemin selon ton projet
+
+
 
 
 const Profile = () => {
@@ -10,7 +14,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
   // État pour les messages de succès/erreur
   const [message, setMessage] = useState({ type: '', text: '' });
-
+   const { userId } = useParams();
   // État pour les données du profil
   const [profileData, setProfileData] = useState({
     nom : '',
@@ -18,20 +22,36 @@ const Profile = () => {
     telephone: '',
     avatar: null
   });
+  
 
   // Charger les données du profil (simulation)
-  useEffect(() => {
-    setTimeout(() => {
-      const userData = {
-        nom: 'chaieb',
-        email: 'chaieb.nawres2@gmail.com',
-        telephone: '58771710',
-        avatar: nawres
-      };
-      setProfileData(userData);
+  
+   useEffect(() => {
+
+  fetch(`http://localhost:5000/user/getUser/${userId}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erreur réseau');
+      }
+      return response.json();
+    })
+    .then(data => {
+  console.log('Data reçue:', data);
+  const user = data.user;
+  setProfileData({
+    nom: user.userName || '',
+    email: user.email || '',
+    telephone: user.phone || '',
+    avatar: user.profile || ''
+  });
+  setLoading(false);
+})
+    .catch(error => {
+      console.error('Erreur lors du chargement:', error);
       setLoading(false);
-    }, 1000);
-  }, []);
+    });
+}, []);
+
 
   // Gérer les changements dans les champs du formulaire
   const handleChange = (e) => {
@@ -134,7 +154,7 @@ const Profile = () => {
         <div className="profile-sidebar">
           <div className="avatar-container">
             <img 
-              src={profileData.avatar || 'https://via.placeholder.com/150'} 
+              src={profileData.avatar || 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_640.png'} 
               alt="Avatar de profil" 
               className="avatar"
             />

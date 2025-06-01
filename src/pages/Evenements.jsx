@@ -20,66 +20,40 @@ const Evenements = () => {
   const [chargement, setChargement] = useState(true);
 
   // Données d'exemple (à remplacer par un appel API réel)
-  useEffect(() => {
-    // Simuler un chargement
-    setTimeout(() => {
-      const evenementsDemo = [
-        {
-          id: 1,
-          titre: "Concert de Jazz",
-          date: "2023-12-15",
-          heure: "20:00",
-          lieu: "Salle Apollo",
-          categorie: "Musique",
-          description: "Un concert de jazz avec les meilleurs artistes de la scène locale.",
-          image: concertImage
-        },
-        {
-          id: 2,
-          titre: "Exposition d'Art Moderne",
-          date: "2023-12-10",
-          heure: "10:00",
-          lieu: "Galerie Lumière",
-          categorie: "Art",
-          description: "Découvrez les œuvres des artistes contemporains les plus prometteurs.",
-          image: artImage
-        },
-        {
-          id: 3,
-          titre: "Festival de Gastronomie",
-          date: "2023-12-18",
-          heure: "12:00",
-          lieu: "Parc Central",
-          categorie: "Gastronomie",
-          description: "Dégustez des plats délicieux préparés par des chefs renommés.",
-          image: gastronomieImage
-        },
-        {
-          id: 4,
-          titre: "Conférence Tech",
-          date: "2023-12-20",
-          heure: "14:00",
-          lieu: "Centre de Conférences",
-          categorie: "Technologie",
-          description: "Les dernières innovations technologiques présentées par des experts.",
-          image: techImage
-        },
-        {
-          id: 5,
-          titre: "Tournoi Sportif",
-          date: "2023-12-22",
-          heure: "19:30",
-          lieu: "Stade Municipal",
-          categorie: "Sport",
-          description: "Une compétition sportive avec les meilleures équipes de la région.",
-          image: sportImage
-        }
-      ];
-      
-      setEvenements(evenementsDemo);
+useEffect(() => {
+  const fetchEvenements = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/event/getallevents');
+      const data = await response.json();
+
+      console.log('Données reçues depuis l’API :', data);
+
+      const eventsArray = data.events || [];
+
+      const imagesParCategorie = {
+        Musique: concertImage,
+        Art: artImage,
+        Gastronomie: gastronomieImage,
+        Technologie: techImage,
+        Sport: sportImage
+      };
+const evenementsAvecImages = eventsArray.map(event => ({
+  ...event,
+  image: event.image?.[0]?.url || imagesParCategorie[event.categorie] || concertImage
+}));
+
+
+      setEvenements(evenementsAvecImages);
+    } catch (error) {
+      console.error('Erreur lors du chargement des événements:', error);
+    } finally {
       setChargement(false);
-    }, 1000);
-  }, []);
+    }
+  };
+
+  fetchEvenements();
+}, []);
+
 
   // Filtrer les événements selon la recherche et la catégorie
   const evenementsFiltres = evenements.filter(event => {
@@ -135,7 +109,8 @@ const Evenements = () => {
         <div className="liste-evenements">
           {evenementsFiltres.length > 0 ? (
             evenementsFiltres.map(event => (
-              <div className="carte-evenement" key={event.id}>
+              <div className="carte-evenement" key={event._id}
+>
                 <div className="image-evenement">
                   <img src={event.image} alt={event.titre} />
                 </div>

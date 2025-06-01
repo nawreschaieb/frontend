@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {handleImageUpload} from '../../utils/uploadUtils';
+import { useNavigate, useParams } from 'react-router-dom';
 import './AddEvent.css';
 
 const AddEvent = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
+    const [submitLoading, setSubmitLoading] = useState(false);
   
   // Liste des régions de Tunisie
   const regions = [
@@ -42,7 +44,7 @@ const AddEvent = () => {
     date: '',
     region: '',
     lieu: '',
-    image: '',
+    image: [], 
     categorie: '',
   });
 
@@ -78,20 +80,31 @@ const AddEvent = () => {
     }
   };
 
-  // Gestion du téléchargement d'image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Pour un téléchargement réel, vous utiliseriez FormData et une API
-      // Ici, nous simulons juste une URL d'image
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreview(imageUrl);
-      setFormData({
-        ...formData,
-        image: file.name // Dans une application réelle, ce serait l'URL après téléchargement
-      });
+
+const handleSingleImageChange = async (e) => {
+  const file = e.target.files[0]; // on prend juste le premier fichier
+  if (file) {
+    try {
+      setSubmitLoading(true);
+      const result = await handleImageUpload(file, 'produits/image');
+
+      setFormData((prev) => ({
+        ...prev,
+        image: [
+          {
+            imageUrl: result.imageUrl,
+            publicId: result.public_id,
+          },
+        ],
+      }));
+    } catch (error) {
+      console.error("Erreur d'upload :", error);
+      alert(`Erreur : ${error.message}`);
+    } finally {
+      setSubmitLoading(false);
     }
-  };
+  }
+};
 
   // Validation du formulaire
   const validateForm = () => {
@@ -282,15 +295,21 @@ const AddEvent = () => {
               type="file"
               id="image"
               name="image"
-              onChange={handleImageChange}
+              onChange={handleSingleImageChange}
               accept="image/*"
             />
             <div className="image-preview">
-              {imagePreview ? (
-                <img src={imagePreview} alt="Aperçu" />
-              ) : (
-                <div className="no-image">Aucune image sélectionnée</div>
-              )}
+            {formData.image.length > 0 && (
+  <div className="image-preview">
+    <img
+      src={formData.image[0].imageUrl}
+      alt="Prévisualisation"
+      style={{ maxWidth: '200px', marginTop: '10px' }}
+    />
+  </div>
+)}
+
+
             </div>
           </div>
         </div>
