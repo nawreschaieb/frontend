@@ -130,7 +130,7 @@ const evenementsAvecImages = eventsArray.map(event => ({
                   <p className="description">{event.description}</p>
                   <button 
                     className="btn-details"
-                    onClick={() => voirDetails(event.id)}
+                    onClick={() => voirDetails(event._id)}
                   >
                     Voir les détails
                   </button>

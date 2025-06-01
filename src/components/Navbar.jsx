@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import nawres from '../assets/nawres.jpg';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate} from 'react-router-dom';
 
 
 
@@ -11,7 +12,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
   const { logout, isOrganisateur, isAuthenticated, currentUser } = useAuth();
 
   useEffect(() => {
@@ -29,8 +30,10 @@ const Navbar = () => {
 
 const handleLogout = () => {
   logout();          // supprime le token et remet currentUser à null
-   window.location.reload();
+  
+   console.log("deconnecte")
   navigate("/Login"); // redirige vers la page de login
+
 };
 
   return (

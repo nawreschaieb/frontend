@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './EventDetails.css';
 
-// Import des images (à remplacer par vos propres imports)
+// Import des images par défaut pour chaque catégorie
 import concertImage from '../assets/enactus.jpg';
 import artImage from '../assets/Festival.jpg';
 import gastronomieImage from '../assets/festival-.jpg';
@@ -15,30 +15,51 @@ const EventDetails = () => {
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-    console.log("ID de l'événement :", id); // ← AJOUTE ÇA
+  // Fonction pour obtenir l'image par défaut selon la catégorie
+  const getDefaultImage = (categorie) => {
+    const imagesParCategorie = {
+      'Musique': concertImage,
+      'Art': artImage,
+      'Gastronomie': gastronomieImage,
+      'Technologie': techImage,
+      'Sport': sportImage
+    };
+    return imagesParCategorie[categorie] || concertImage; // concertImage comme fallback par défaut
+  };
 
-  setLoading(true);
+  // Fonction pour formater la date
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('fr-FR', options);
+  };
 
-  fetch(`http://localhost:5000/event/getevents/${id}`)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Erreur lors du chargement des événements");
-      }
-      return response.json();
-    })
-    .then(eventData => {
-      setEvent(eventData);
-    })
-    .catch(error => {
-      console.error("Erreur fetch :", error);
-      setEvent(null);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-}, [id]);
+  useEffect(() => {
+    console.log("ID de l'événement :", id);
 
+    setLoading(true);
+
+    fetch(`http://localhost:5000/event/getevents/${id}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Erreur lors du chargement des événements");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.success && data.event) {
+          setEvent(data.event);
+        } else {
+          throw new Error(data.message || "Données d'événement invalides");
+        }
+      })
+      .catch(error => {
+        console.error("Erreur fetch :", error);
+        setEvent(null);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   // Gérer la réservation
   const handleReservation = () => {
@@ -77,8 +98,15 @@ useEffect(() => {
 
       <div className="event-details-content">
         <div className="event-details-image">
-          <img src={event.image} alt={event.titre} />
-          <div className="event-category-badge">{event.categorie}</div>
+          <img 
+            src={event?.image?.[0]?.url || getDefaultImage(event?.categorie)} 
+            alt={event?.titre || 'Image de l\'événement'} 
+            onError={(e) => {
+              e.target.onerror = null; // Empêche la boucle infinie
+              e.target.src = getDefaultImage(event?.categorie);
+            }}
+          />
+          <div className="event-category-badge">{event?.categorie}</div>
         </div>
 
         <div className="event-details-info">
@@ -87,7 +115,7 @@ useEffect(() => {
           <div className="event-meta">
             <div className="meta-item">
               <i className="fas fa-calendar"></i>
-              <span>{formatDate(event.date)} à {event.heure}</span>
+              <span>{formatDate(event.date)}</span>
             </div>
             <div className="meta-item">
               <i className="fas fa-map-marker-alt"></i>
@@ -99,23 +127,20 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className="event-description">
-            <h3>Description</h3>
-            <p>{event.description}</p>
-          </div>
+       
 
           <div className="event-additional-info">
             <div className="info-item">
-              <h4>Organisateur</h4>
-              <p>{event.organisateur}</p>
+              <h4>Catégorie</h4>
+              <p>{event.categorie}</p>
             </div>
             <div className="info-item">
-              <h4>Contact</h4>
-              <p>{event.contact}</p>
+              <h4>Région</h4>
+              <p>{event.region}</p>
             </div>
             <div className="info-item">
-              <h4>Places disponibles</h4>
-              <p>{event.places_disponibles}</p>
+              <h4>Lieu</h4>
+              <p>{event.lieu}</p>
             </div>
           </div>
 
